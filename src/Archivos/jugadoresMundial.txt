@@ -1,0 +1,175 @@
+NombreJugador,EdadJugador,EquipoJugador
+Emiliano Martínez,33,Argentina
+Nahuel Molina,25,Argentina
+Cristian Romero,26,Argentina
+Nicolás Otamendi,36,Argentina
+Nicolás Tagliafico,33,Argentina
+Rodrigo De Paul,29,Argentina
+Enzo Fernández,23,Argentina
+Alexis Mac Allister,25,Argentina
+Lionel Messi,37,Argentina
+Julián Álvarez,25,Argentina
+Ángel Di María,36,Argentina
+Mohammed Al‑Owais,35,Arabia Saudi
+Saud Abdulhamid,28,Arabia Saudi
+Hassan Al‑Tombakti,29,Arabia Saudi
+Ali Al‑Bulayhi,38,Arabia Saudi
+Yasser Al‑Shahrani,33,Arabia Saudi
+Abdulelah Al‑Malki,31,Arabia Saudi
+Mohamed Kanno,31,Arabia Saudi
+Salem Al‑Dawsari,33,Arabia Saudi
+Feras Al‑Buraikan,27,Arabia Saudi
+Saleh Al‑Shehri,31,Arabia Saudi
+Nasser Al‑Dawsari,26,Arabia Saudi
+Guillermo Ochoa,39,México
+Jorge Sánchez,26,México
+Héctor Moreno,35,México
+César Montes,26,México
+Jesús Gallardo,30,México
+Edson Álvarez,26,México
+Héctor Herrera,34,México
+Orbelín Pineda,28,México
+Hirving Lozano,28,México
+Raúl Jiménez,32,México
+Alexis Vega,26,México
+Wojciech Szczęsny,35,Polonia
+Robert Gumny,25,Polonia
+Kamil Glik,37,Polonia
+Jakub Kiwior,23,Polonia
+Szymon Żurkowski,26,Polonia
+Sebastian Szymański,25,Polonia
+Jakub Kamiński,22,Polonia
+Kamil Grosicki,35,Polonia
+Nicola Zalewski,20,Polonia
+Krzysztof Piątek,29,Polonia
+Karol Świderski,28,Polonia
+Hugo Lloris,36,Francia
+Jules Koundé,26,Francia
+Raphaël Varane,31,Francia
+Dayot Upamecano,25,Francia
+Théo Hernandez,26,Francia
+Aurélien Tchouaméni,25,Francia
+Adrien Rabiot,28,Francia
+Ousmane Dembélé,26,Francia
+Antoine Griezmann,32,Francia
+Kylian Mbappé,26,Francia
+Olivier Giroud,37,Francia
+Mathew Ryan,32,Australia
+Fran Karacic,30,Australia
+Harry Souttar,24,Australia
+Aziz Behich,31,Australia
+Bailey Wright,30,Australia
+Jackson Irvine,29,Australia
+Aaron Mooy,32,Australia
+Kye Rowles,27,Australia
+Awer Mabil,26,Australia
+Jamie Maclaren,30,Australia
+Martin Boyle,29,Australia
+Kasper Schmeichel,38,Dinamarca
+Jens Stryger Larsen,33,Dinamarca
+Joakim Mæhle,26,Dinamarca
+Simon Kjær,34,Dinamarca
+Andreas Christensen,28,Dinamarca
+Victor Nelsson,25,Dinamarca
+Thomas Delaney,31,Dinamarca
+Pierre‑Emile Højbjerg,28,Dinamarca
+Mathias Jensen,27,Dinamarca
+Christian Eriksen,33,Dinamarca
+Mikkel Damsgaard,24,Dinamarca
+Aymen Mathlouthi,36,Túnez
+Montassar Talbi,26,Túnez
+Nader Ghandri,28,Túnez
+Ali Maâloul,33,Túnez
+Wajdi Kechrida,28,Túnez
+Hannibal Mejbri,21,Túnez
+Ferjani Sassi,31,Túnez
+Ellyes Skhiri,30,Túnez
+Youssef Msakni,33,Túnez
+Saifeddine Jaziri,30,Túnez
+Wahbi Khazri,34,Túnez
+Alisson Becker,32,Brasil
+Éder Militão,25,Brasil
+Thiago Silva,40,Brasil
+Marquinhos,29,Brasil
+Alex Sandro,33,Brasil
+Casemiro,31,Brasil
+Bruno Guimarães,25,Brasil
+Lucas Paquetá,25,Brasil
+Fred,30,Brasil
+Vinícius Jr.,24,Brasil
+Rodrygo,22,Brasil
+Marko Dmitrović,33,Serbia
+Strahinja Pavlović,23,Serbia
+Miloš Veljković,29,Serbia
+Filip Mladenović,32,Serbia
+Strahinja Eraković,23,Serbia
+Nikola Milenković,27,Serbia
+Dušan Tadić,35,Serbia
+Filip Kostić,31,Serbia
+Sergej Milinković‑Savic,29,Serbia
+Luka Jović,26,Serbia
+Aleksandar Mitrović,30,Serbia
+Yann Sommer,38,Suiza
+Manuel Akanji,29,Suiza
+Fabian Schär,34,Suiza
+Ricardo Rodríguez,35,Suiza
+Silvan Widmer,33,Suiza
+Gran it Xhaka,32,Suiza
+Remo Freuler,32,Suiza
+Xherdan Shaqiri,33,Suiza
+Breel Embolo,27,Suiza
+David Ondo Epassy,31,Camerun
+Henri Bedimo Fai,29,Camerun
+Basile Wooh,–,Camerun
+Nicolas N’Koulou,32,Camerun
+Brice Tolo,27,Camerun
+Andre‑Frank Zambo Anguissa,27,Camerun
+Felix‑Alexander Kunde,28,Camerun
+Georges‑Kevin N’Kamu Ngamaleu,26,Camerun
+Bryan Mbeumo,25,Camerun
+Vincent Aboubakar,31,Camerun
+Eric Maxim Choupo‑Moting,34,Camerun
+Diogo Costa,26,Portugal
+Diogo Dalot,25,Portugal
+Pepe,41,Portugal
+Rúben Dias,26,Portugal
+Raphaël Guerreiro,31,Portugal
+Bernardo Silva,30,Portugal
+Rúben Neves,28,Portugal
+Otávio,30,Portugal
+Bruno Fernandes,30,Portugal
+João Félix,24,Portugal
+Gonçalo Ramos,24,Portugal
+Lawrence Ati-Zigi,27,Ghana
+Tariq Lamptey,23,Ghana
+Daniel Amartey,31,Ghana
+Mohammed Salisu,25,Ghana
+Gideon Mensah,27,Ghana
+Thomas Partey,31,Ghana
+Salis Abdul Samed,25,Ghana
+Mohammed Kudus,24,Ghana
+André Ayew,33,Ghana
+Iñaki Williams,30,Ghana
+Jordan Ayew,33,Ghana
+Sergio Rochet,31,Uruguay
+José María Giménez,30,Uruguay
+Sebastián Coates,33,Uruguay
+Diego Godín,38,Uruguay
+Ronald Araújo,25,Uruguay
+Rodrigo Bentancur,27,Uruguay
+Federico Valverde,26,Uruguay
+Lucas Torreira,29,Uruguay
+Luis Suárez,38,Uruguay
+Darwin Núñez,25,Uruguay
+Edinson Cavani,37,Uruguay
+Kim Seung‑gyu,35,Corea Del Sur
+Kim Min‑jae,27,Corea Del Sur
+Kim Young‑gwon,35,Corea Del Sur
+Kim Jin‑su,33,Corea Del Sur
+Kwon Kyung‑won,32,Corea Del Sur
+Hwang In‑beom,29,Corea Del Sur
+Kwon Chang‑hoon,29,Corea Del Sur
+Paik Seung‑ho,27,Corea Del Sur
+Cho Gue‑sung,26,Corea Del Sur
+Son Heung‑min,32,Corea Del Sur
+Lee Jae‑sung,31,Corea Del Sur

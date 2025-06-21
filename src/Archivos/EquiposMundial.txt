@@ -1,0 +1,17 @@
+NombreEquipo,PuntajeEquipo
+Argentina,0
+Arabia Saudi,0
+Maxico,0
+Polonia,0
+Francia,0
+Australia,0
+Dinamarca,0
+Tunez,0
+Brasil,0
+Serbia,0
+Suiza,0
+Camerun,0
+Portugal,0
+Ghana,0
+Uruguay,0
+Corea Del Sur,0
