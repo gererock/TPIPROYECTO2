@@ -4,10 +4,56 @@
  */
 package Modelo;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * @author Geremias Rocchietti
  */
 public class Grupos {
+    private List<Equipos> GrupoA = new ArrayList<>();
+    private List<Equipos> GrupoB = new ArrayList<>();
+    private List<Equipos> GrupoC = new ArrayList<>();
+    private List<Equipos> GrupoD = new ArrayList<>();
+
+    public List<Equipos> getGrupoA() {
+        return GrupoA;
+    }
+
+    public void setGrupoA(List<Equipos> GrupoA) {
+        this.GrupoA = GrupoA;
+    }
+
+    public List<Equipos> getGrupoB() {
+        return GrupoB;
+    }
+
+    public void setGrupoB(List<Equipos> GrupoB) {
+        this.GrupoB = GrupoB;
+    }
+
+    public List<Equipos> getGrupoC() {
+        return GrupoC;
+    }
+
+    public void setGrupoC(List<Equipos> GrupoC) {
+        this.GrupoC = GrupoC;
+    }
+
+    public List<Equipos> getGrupoD() {
+        return GrupoD;
+    }
+
+    public void setGrupoD(List<Equipos> GrupoD) {
+        this.GrupoD = GrupoD;
+    }
+
+    @Override
+    public String toString() {
+        return "Grupos{" + "GrupoA=" + GrupoA + "\n GrupoB=" + GrupoB + "\n GrupoC=" + GrupoC + "\n GrupoD=" + GrupoD + '}';
+    }
+    
+    
     
 }
