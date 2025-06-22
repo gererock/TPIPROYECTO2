@@ -22,7 +22,7 @@ public class Vista {
         System.out.println("Menu");
         System.out.println("1. COMENZAR CAMPEONATO");
         System.out.println("2. VER EQUIPOS");
-        System.out.println("2. AGREGAR EQUIPOS");
+        System.out.println("3. AGREGAR EQUIPOS");
 
         System.out.println("0. SALIR");
         System.out.print("Ingrese opción: ");
@@ -30,13 +30,14 @@ public class Vista {
     }
 
     public int menucampeonato() {
-        System.out.println("Menu");
-        System.out.println("1. JUGAR PARTIDO");
-        System.out.println("2. VER PARTIDOS");
-        System.out.println("0. SALIR");
-        System.out.print("Ingrese opción: ");
-        return Integer.parseInt(scanner.nextLine());
-    }
+    System.out.println("\n----- MENÚ CAMPEONATO -----");
+    System.out.println("1. Jugar un partido");
+    System.out.println("2. Ver fixture");
+    System.out.println("0. Volver al menú principal");
+    System.out.print("Ingrese opción: ");
+    return Integer.parseInt(scanner.nextLine());
+}
+
 
     private int leerEntero(String label) {
         int valor;
@@ -91,5 +92,64 @@ public class Vista {
         System.out.println("\n" + titulo);
         lista.forEach(e -> System.out.println("  • " + e));
     }
+    public void mostrarEquiposConJugadores(List<Equipos> equipos) {
+    
+   }
+    
+   public Equipos[] pedirEquipos(List<Equipos> disponibles) {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Seleccione el número del equipo LOCAL:");
+        for (int i = 0; i < disponibles.size(); i++) {
+            System.out.println(i + " - " + disponibles.get(i).getNombreEquipo());
+        }
+
+        int local = sc.nextInt();
+
+        System.out.println("Seleccione el número del equipo VISITANTE:");
+        int visitante = sc.nextInt();
+
+        Equipos[] seleccionados = new Equipos[2];
+        seleccionados[0] = disponibles.get(local);
+        seleccionados[1] = disponibles.get(visitante);
+
+        return seleccionados;
+    }
+   
+    public String pedirEstadio() {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Ingrese el nombre del estadio: ");
+        return sc.nextLine();
+    }
+    
+    private final Scanner sc = new Scanner(System.in);
+
+    
+
+    public int pedirGoles(String nombreEquipo) {
+        System.out.print("Ingrese los goles del equipo " + nombreEquipo + ": ");
+        while (true) {
+            try {
+                int goles = Integer.parseInt(sc.nextLine());
+                if (goles < 0) {
+                    System.out.print("Los goles no pueden ser negativos. Intente nuevamente: ");
+                    continue;
+                }
+                return goles;
+            } catch (NumberFormatException e) {
+                System.out.print("Entrada inválida. Ingrese un número entero: ");
+            }
+        }
+    }
+
+    public String pedirNombreEquipo() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public int pedirPuntajeEquipo() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    
+    
 
 }

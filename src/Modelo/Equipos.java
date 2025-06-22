@@ -7,13 +7,15 @@ package Modelo;
 import java.util.ArrayList;
 import java.util.List;
 
+
+
 /**
  *
  * @author Geremias Rocchietti
  */
 public class Equipos {
     private String nombreEquipo;
-    private String puntuacionEquipo;
+    private int puntuacionEquipo;
     private final List<Jugadores> plantel = new ArrayList<>();
 
     public Equipos(String nombreEquipo, int puntuacionEquipo) {
@@ -21,7 +23,6 @@ public class Equipos {
         this.puntuacionEquipo = puntuacionEquipo;
     }
     
-
     public String getNombreEquipo() {
         return nombreEquipo;
     }
@@ -30,20 +31,24 @@ public class Equipos {
         this.nombreEquipo = nombreEquipo;
     }
 
-    public String getPuntuacionEquipo() {
+    public int getPuntuacionEquipo() {
         return puntuacionEquipo;
     }
 
-    public void setPuntuacionEquipo(String puntuacionEquipo) {
+    public void setPuntuacionEquipo(int puntuacionEquipo) {
         this.puntuacionEquipo = puntuacionEquipo;
     }
-    public List<Jugadores> getPlantel()           { return plantel; }
-    public void addJugador(Jugadores j)           { plantel.add(j); }
+
+    public List<Jugadores> getPlantel() {
+        return plantel;
+    }
+
+    public void addJugador(Jugadores j) {
+        plantel.add(j);
+    }
 
     @Override
     public String toString() {
         return "Equipos{" + "nombreEquipo=" + nombreEquipo + ", puntuacionEquipo=" + puntuacionEquipo + '}';
     }
-    
-    
 }

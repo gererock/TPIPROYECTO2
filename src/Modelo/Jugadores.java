@@ -10,14 +10,12 @@ package Modelo;
  */
 public class Jugadores {
     private String nombreJugador;
-    private String edadJugador;
+    private int edadJugador;
     private Equipos equipo;
 
     public Jugadores(String nombreJugador, int edadJugador) {
         this.nombreJugador = nombreJugador;
         this.edadJugador = edadJugador;
-
-        this.equipo = equipo;
     }
 
     public String getNombreJugador() {
@@ -28,11 +26,11 @@ public class Jugadores {
         this.nombreJugador = nombreJugador;
     }
 
-    public String getEdadJugador() {
+    public int getEdadJugador() {
         return edadJugador;
     }
 
-    public void setEdadJugador(String edadJugador) {
+    public void setEdadJugador(int edadJugador) {
         this.edadJugador = edadJugador;
     }
 

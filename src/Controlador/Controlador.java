@@ -5,6 +5,7 @@
 package Controlador;
 
 import Modelo.Equipos;
+import Modelo.Fase;
 import Modelo.Grupos;
 import Modelo.Jugadores;
 import Modelo.Partidos;
@@ -14,7 +15,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import modelo.Fase;
+import java.util.stream.Collectors;
+
 
 /**
  *
@@ -24,14 +26,19 @@ public class Controlador {
 
     private final List<Jugadores> jugadores = new ArrayList<>();
     private final List<Equipos> equipos = new ArrayList<>();
-    private final Vista vista = new Vista();
+    
     private final Grupos grupos = new Grupos();
     private final List<Partidos> fixture = new ArrayList<>();
     private Fase faseActual = Fase.GRUPOS;
+    private final Vista vista = new Vista();
+
 
     /* Listado rápido de equipos “vivos” */
     private List<Equipos> equiposVivos() {
-        return equipos.stream().filter(e -> e.getPuntuacionEquipo() >= 0).toList();
+        return equipos.stream()
+              .filter(e -> e.getPuntuacionEquipo() >= 0)
+              .collect(Collectors.toList());
+
     }
 
     public void iniciar() {
@@ -39,10 +46,13 @@ public class Controlador {
 
         while (!salir) {
             switch (vista.menu()) {
-                case 1 ->
-                    comenzarCampeonato();        // ← opción nueva
-                case 2 ->
+                case 1 ->{
+                    comenzarCampeonato();
+                    ejecutarCampeonato();
+                }
+                case 2 ->{
                     vista.mostrarEquiposConJugadores(equipos);
+                }
                 case 0 ->
                     salir = true;
                 default ->
@@ -50,6 +60,9 @@ public class Controlador {
             }
         }
     }
+    
+    
+    
 
     private void comenzarCampeonato() {
         if (equipos.size() != 16) {
@@ -251,4 +264,19 @@ public class Controlador {
     public void verEquipos() {
         vista.mostrarGrupos(grupos);
     }
+    
+    private void ejecutarCampeonato() {
+    boolean volver = false;
+    while (!volver) {
+        switch (vista.menucampeonato()) {
+            case 1 -> jugarPartido();
+            case 2 -> vista.mostrarFixture(fixture);
+            case 0 -> volver = true;
+            default -> vista.mensaje("Opción inválida.");
+        }
+    }
+    
+    }
+
+
 }

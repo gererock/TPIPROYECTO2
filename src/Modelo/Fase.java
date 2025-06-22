@@ -8,6 +8,6 @@ package Modelo;
  *
  * @author Geremias Rocchietti
  */
-public class Fase {
-    
+public enum Fase {
+    GRUPOS, CUARTOS, SEMIS, FINAL
 }
