@@ -8,6 +8,6 @@ package Modelo;
  *
  * @author Geremias Rocchietti
  */
-public class Cuartos {
+public class Fase {
     
 }

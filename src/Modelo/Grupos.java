@@ -54,6 +54,12 @@ public class Grupos {
         return "Grupos{" + "GrupoA=" + GrupoA + "\n GrupoB=" + GrupoB + "\n GrupoC=" + GrupoC + "\n GrupoD=" + GrupoD + '}';
     }
     
-    
+        public void asignarAGrupo(Equipos e, int indice) {
+        if      (indice < 4)  GrupoA.add(e);
+        else if (indice < 8)  GrupoB.add(e);
+        else if (indice < 12) GrupoC.add(e);
+        else                  GrupoD.add(e);
+    }
+
     
 }

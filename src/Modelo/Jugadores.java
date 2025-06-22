@@ -11,9 +11,9 @@ package Modelo;
 public class Jugadores {
     private String nombreJugador;
     private String edadJugador;
-    private String equipo;
+    private Equipos equipo;
 
-    public Jugadores(String nombreJugador, String edadJugador, String equipo) {
+    public Jugadores(String nombreJugador, int edadJugador) {
         this.nombreJugador = nombreJugador;
         this.edadJugador = edadJugador;
 
@@ -36,18 +36,20 @@ public class Jugadores {
         this.edadJugador = edadJugador;
     }
 
-    public String getEquipo() {
+    public Equipos getEquipo() {
         return equipo;
     }
 
-    public void setEquipo(String equipo) {
+    public void setEquipo(Equipos equipo) {
         this.equipo = equipo;
     }
 
-    @Override
+ @Override
     public String toString() {
-        return "Jugadores{" + "nombreJugador=" + nombreJugador + ", edadJugador=" + edadJugador + ", equipo=" + equipo + '}';
+        return "%s (%d años) - %s".formatted(nombreJugador, edadJugador,
+                                             equipo != null ? equipo.getNombreEquipo() : "Sin equipo");
     }
+
 
  
     

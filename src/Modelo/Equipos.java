@@ -4,6 +4,9 @@
  */
 package Modelo;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * @author Geremias Rocchietti
@@ -11,11 +14,13 @@ package Modelo;
 public class Equipos {
     private String nombreEquipo;
     private String puntuacionEquipo;
+    private final List<Jugadores> plantel = new ArrayList<>();
 
-    public Equipos(String nombreEquipo, String puntuacionEquipo) {
+    public Equipos(String nombreEquipo, int puntuacionEquipo) {
         this.nombreEquipo = nombreEquipo;
         this.puntuacionEquipo = puntuacionEquipo;
     }
+    
 
     public String getNombreEquipo() {
         return nombreEquipo;
@@ -32,6 +37,8 @@ public class Equipos {
     public void setPuntuacionEquipo(String puntuacionEquipo) {
         this.puntuacionEquipo = puntuacionEquipo;
     }
+    public List<Jugadores> getPlantel()           { return plantel; }
+    public void addJugador(Jugadores j)           { plantel.add(j); }
 
     @Override
     public String toString() {
