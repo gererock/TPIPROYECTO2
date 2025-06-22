@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 /**
  *
  * @author Geremias Rocchietti
@@ -26,7 +25,7 @@ public class Controlador {
 
     private final List<Jugadores> jugadores = new ArrayList<>();
     private final List<Equipos> equipos = new ArrayList<>();
-    
+
     private final Grupos grupos = new Grupos();
     private final List<Partidos> fixture = new ArrayList<>();
     private Fase faseActual = Fase.GRUPOS;
@@ -36,8 +35,8 @@ public class Controlador {
     /* Listado rápido de equipos “vivos” */
     private List<Equipos> equiposVivos() {
         return equipos.stream()
-              .filter(e -> e.getPuntuacionEquipo() >= 0)
-              .collect(Collectors.toList());
+                .filter(e -> e.getPuntuacionEquipo() >= 0)
+                .collect(Collectors.toList());
 
     }
 
@@ -46,12 +45,15 @@ public class Controlador {
 
         while (!salir) {
             switch (vista.menu()) {
-                case 1 ->{
+                case 1 -> {
                     comenzarCampeonato();
                     ejecutarCampeonato();
                 }
-                case 2 ->{
+                case 2 -> {
                     vista.mostrarEquiposConJugadores(equipos);
+                }
+                case 3 -> {
+                    vista.mostrarTablaDePosiciones(equipos);
                 }
                 case 0 ->
                     salir = true;
@@ -60,9 +62,6 @@ public class Controlador {
             }
         }
     }
-    
-    
-    
 
     private void comenzarCampeonato() {
         if (equipos.size() != 16) {
@@ -141,14 +140,20 @@ public class Controlador {
                 int puntaje = Integer.parseInt(p[1].trim());
 
                 Equipos e = new Equipos(nombre, puntaje);
+                e.setGrupo(obtenerGrupoPorIndice(indice));
                 equipos.add(e);
-                grupos.asignarAGrupo(e, indice);         // ← lo mete en A, B, C o D
+                grupos.asignarAGrupo(e, indice);
                 indice++;
             }
             vista.mensaje("Equipos cargados: " + equipos.size());
         } catch (IOException ex) {
             vista.mensaje("Error leyendo equipos: " + ex.getMessage());
         }
+    }
+
+    private String obtenerGrupoPorIndice(int indice) {
+        char grupo = (char) ('A' + (indice / 4)); // 4 equipos por grupo: A, B, C, D...
+        return String.valueOf(grupo);
     }
 
     public void jugarPartido() {
@@ -164,7 +169,7 @@ public class Controlador {
             return;
         }
 
-        // ¿Existe un partido disponible entre esos equipos en esta fase?
+      
         Partidos partido = fixture.stream()
                 .filter(p -> !p.isJugado()
                 && p.getFase() == faseActual
@@ -177,7 +182,6 @@ public class Controlador {
             return;
         }
 
-        // Pedir estadio si aún no estaba fijado
         if (partido.getNombreEstadio().equals("Por definir")) {
             partido.setNombreEstadio(vista.pedirEstadio());
         }
@@ -189,17 +193,17 @@ public class Controlador {
         partido.setGolesVisitante(gV);
         partido.setJugado(true);
 
-        // Sumar puntos por gol SOLO en fase de grupos
+        
         if (faseActual == Fase.GRUPOS) {
             local.setPuntuacionEquipo(local.getPuntuacionEquipo() + gL);
             visit.setPuntuacionEquipo(visit.getPuntuacionEquipo() + gV);
         }
 
-        // Si es eliminatorio, avanza el ganador y elimina el perdedor
+        
         if (partido.isEliminatorio()) {
             Equipos ganador = gL > gV ? local : visit;
             Equipos perdedor = gL > gV ? visit : local;
-            perdedor.setPuntuacionEquipo(-1);             // marcador “eliminado”
+            perdedor.setPuntuacionEquipo(-1);             
         }
 
         vista.mensaje("Resultado registrado.");
@@ -220,35 +224,35 @@ public class Controlador {
         List<Equipos> clasificados = new ArrayList<>();
         for (List<Equipos> g : List.of(grupos.getGrupoA(), grupos.getGrupoB(),
                 grupos.getGrupoC(), grupos.getGrupoD())) {
-            // ordenar por puntaje descendente
+           
             g.sort((a, b) -> Integer.compare(b.getPuntuacionEquipo(), a.getPuntuacionEquipo()));
 
             Equipos segundo = g.get(1);
             Equipos tercero = g.get(2);
 
             if (segundo.getPuntuacionEquipo() == tercero.getPuntuacionEquipo()) {
-                // desempate directo - partido extra
+              
                 Partidos tie = new Partidos();
                 tie.setEquipoLocal(segundo);
                 tie.setEquipoVisitante(tercero);
-                tie.setFase(Fase.GRUPOS);           // sigue siendo grupos
+                tie.setFase(Fase.GRUPOS);         
                 tie.setNombreEstadio("Desempate");
                 fixture.add(tie);
                 vista.mensaje("Se agendó desempate " + segundo.getNombreEquipo()
                         + " vs " + tercero.getNombreEquipo());
-                return; // se esperará a que se juegue el desempate
+                return; 
             }
             clasificados.add(g.get(0));
             clasificados.add(segundo);
         }
 
-        // Crear cuartos de final (A1-B2, B1-A2, C1-D2, D1-C2)
+   
         crearCuartos(clasificados);
         faseActual = Fase.CUARTOS;
     }
 
     private void crearCuartos(List<Equipos> c) {
-        // c viene en orden [A1,A2,B1,B2,C1,C2,D1,D2]
+        
         int[][] cruces = {{0, 3}, {2, 1}, {4, 7}, {6, 5}};
         for (int[] par : cruces) {
             Partidos p = new Partidos();
@@ -264,19 +268,22 @@ public class Controlador {
     public void verEquipos() {
         vista.mostrarGrupos(grupos);
     }
-    
-    private void ejecutarCampeonato() {
-    boolean volver = false;
-    while (!volver) {
-        switch (vista.menucampeonato()) {
-            case 1 -> jugarPartido();
-            case 2 -> vista.mostrarFixture(fixture);
-            case 0 -> volver = true;
-            default -> vista.mensaje("Opción inválida.");
-        }
-    }
-    
-    }
 
+    private void ejecutarCampeonato() {
+        boolean volver = false;
+        while (!volver) {
+            switch (vista.menucampeonato()) {
+                case 1 ->
+                    jugarPartido();
+                case 2 ->
+                    vista.mostrarFixture(fixture);
+                case 0 ->
+                    volver = true;
+                default ->
+                    vista.mensaje("Opción inválida.");
+            }
+        }
+
+    }
 
 }

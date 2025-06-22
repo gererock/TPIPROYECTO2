@@ -96,7 +96,7 @@ public class Partidos {
     }
 
     public boolean isEliminatorio() {
-        return fase != Fase.GRUPOS;  // cuartos, semi y final eliminan al perdedor
+        return fase != Fase.GRUPOS;  
     }
 
     @Override
