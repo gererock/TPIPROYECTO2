@@ -121,14 +121,14 @@ Breel Embolo,27,Suiza
 David Ondo Epassy,31,Camerun
 Henri Bedimo Fai,29,Camerun
 Basile Wooh,–,Camerun
-Nicolas N’Koulou,32,Camerun
+Nicolas NKoulou,32,Camerun
 Brice Tolo,27,Camerun
-Andre‑Frank Zambo Anguissa,27,Camerun
-Felix‑Alexander Kunde,28,Camerun
-Georges‑Kevin N’Kamu Ngamaleu,26,Camerun
+AndreFrank Zambo Anguissa,27,Camerun
+FelixAlexander Kunde,28,Camerun
+GeorgesKevin NKamu Ngamaleu,26,Camerun
 Bryan Mbeumo,25,Camerun
 Vincent Aboubakar,31,Camerun
-Eric Maxim Choupo‑Moting,34,Camerun
+Eric Maxim ChoupoMoting,34,Camerun
 Diogo Costa,26,Portugal
 Diogo Dalot,25,Portugal
 Pepe,41,Portugal

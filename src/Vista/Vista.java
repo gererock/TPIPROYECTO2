@@ -26,7 +26,8 @@ public class Vista {
         System.out.println("Menu");
         System.out.println("1. COMENZAR CAMPEONATO");
         System.out.println("2. VER EQUIPOS");
-        System.out.println("3. VER TABLA DE POSICIONES");
+        System.out.println("3. VER GRUPOS");
+
 
         System.out.println("0. SALIR");
         System.out.print("Ingrese opción: ");
@@ -37,6 +38,7 @@ public class Vista {
         System.out.println("\n----- MENÚ CAMPEONATO -----");
         System.out.println("1. Jugar un partido");
         System.out.println("2. Ver fixture");
+        System.out.println("3. VER TABLA DE POSICIONES");
         System.out.println("0. Volver al menú principal");
         System.out.print("Ingrese opción: ");
         return Integer.parseInt(scanner.nextLine());

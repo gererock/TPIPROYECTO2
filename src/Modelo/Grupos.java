@@ -51,7 +51,7 @@ public class Grupos {
 
     @Override
     public String toString() {
-        return "Grupos{" + "GrupoA=" + GrupoA + "\n GrupoB=" + GrupoB + "\n GrupoC=" + GrupoC + "\n GrupoD=" + GrupoD + '}';
+        return "=============Grupos=============" + "\nGrupoA=" + GrupoA + "\n GrupoB=" + GrupoB + "\n GrupoC=" + GrupoC + "\n GrupoD=" + GrupoD + '}';
     }
     
         public void asignarAGrupo(Equipos e, int indice) {
