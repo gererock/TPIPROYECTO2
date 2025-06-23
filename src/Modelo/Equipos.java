@@ -17,6 +17,7 @@ public class Equipos {
     private int puntuacionEquipo;
     private final List<Jugadores> plantel = new ArrayList<>();
     private String grupo;
+    
 
     public Equipos(String nombreEquipo, int puntuacionEquipo) {
         this.nombreEquipo = nombreEquipo;
@@ -31,8 +32,6 @@ public class Equipos {
     public void setGrupo(String grupo) {
         this.grupo = grupo;
     }
-    
-    
 
     public String getNombreEquipo() {
         return nombreEquipo;
@@ -60,6 +59,7 @@ public class Equipos {
 
     private int golesAFavor = 0;
     private int golesEnContra = 0;
+    private int diferenciaGoles = 0;
 
     public int getGolesAFavor() {
         return golesAFavor;
@@ -83,6 +83,18 @@ public class Equipos {
 
     public void sumarPuntos(int puntos) {
         this.puntuacionEquipo += puntos;
+    }
+
+    public void sumarGolesAFavor(int goles) {
+        this.golesAFavor += goles;
+    }
+
+    public void sumarGolesEnContra(int goles) {
+        this.golesEnContra += goles;
+    }
+
+    public void actualizarDiferenciaGoles() {
+        this.diferenciaGoles = this.golesAFavor - this.golesEnContra;
     }
 
     @Override

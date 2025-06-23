@@ -234,8 +234,25 @@ public class Controlador {
         partido.setJugado(true);
 
         if (faseActual == Fase.GRUPOS) {
-            local.setPuntuacionEquipo(local.getPuntuacionEquipo() + gL);
-            visit.setPuntuacionEquipo(visit.getPuntuacionEquipo() + gV);
+            // Puntos
+            if (gL > gV) {
+                local.sumarPuntos(3);
+            } else if (gL < gV) {
+                visit.sumarPuntos(3);
+            } else {
+                local.sumarPuntos(1);
+                visit.sumarPuntos(1);
+            }
+
+            // Goles a favor y en contra
+            local.sumarGolesAFavor(gL);
+            local.sumarGolesEnContra(gV);
+            visit.sumarGolesAFavor(gV);
+            visit.sumarGolesEnContra(gL);
+
+            // Diferencia de goles
+            local.actualizarDiferenciaGoles();
+            visit.actualizarDiferenciaGoles();
         }
 
         if (partido.isEliminatorio()) {
