@@ -76,10 +76,12 @@ public class Controlador {
             vista.mensaje("Para comenzar se necesitan exactamente 16 equipos (4 por grupo).");
             return;
         }
-        generarFixtureGrupos();
+
+        generarFixtureGrupos();                       // ➊  AGREGA ESTA LÍNEA
+
         faseActual = Fase.GRUPOS;
-        vista.mensaje("¡Fixture generado y fase de grupos iniciada!");
-        vista.mostrarFixture(fixture);
+        vista.mensaje("Fixture generado y fase de grupos iniciada!"); // quité el «¡»
+        vista.mostrarFixtureGrupos(grupos, fixture);  // mantiene el orden correcto ahora
     }
 
     private void generarFixtureGrupos() {
@@ -198,73 +200,125 @@ public class Controlador {
     }
 
     public void jugarPartido() {
+
         if (faseActual == null) {
             vista.mensaje("No hay fase activa.");
             return;
         }
 
-        Equipos[] par = vista.pedirEquipos(equiposVivos());
-        Equipos local = par[0], visit = par[1];
-        if (local == null || visit == null || local == visit) {
-            vista.mensaje("Equipos inválidos.");
+        /* ---------------------------- FASE DE GRUPOS ---------------------------- */
+        if (faseActual == Fase.GRUPOS) {
+
+            // 1) Mostrar fixture agrupado para que el usuario vea qué queda.
+            vista.mostrarFixtureGrupos(grupos, fixture);
+
+            // 2) Elegir grupo
+            char letra = vista.menuSeleccionarGrupo();
+            if (letra == '0') {
+                return;
+            }
+
+            List<Equipos> listaEquipos = switch (letra) {
+                case 'A' ->
+                    grupos.getGrupoA();
+                case 'B' ->
+                    grupos.getGrupoB();
+                case 'C' ->
+                    grupos.getGrupoC();
+                default ->
+                    grupos.getGrupoD();
+            };
+
+            // 3) Partidos pendientes de ese grupo
+            List<Partidos> pendientes = fixture.stream()
+                    .filter(p -> !p.isJugado()
+                    && p.getFase() == Fase.GRUPOS
+                    && listaEquipos.contains(p.getEquipoLocal()))
+                    .toList();
+
+            if (pendientes.isEmpty()) {
+                vista.mensaje("No quedan partidos pendientes en el grupo " + letra + ".");
+                return;
+            }
+
+            int n = vista.menuSeleccionarPartido(pendientes);
+            if (n <= 0 || n > pendientes.size()) {
+                return;
+            }
+
+            procesarResultado(pendientes.get(n - 1)); 
+            finalizarFaseGrupos();
+            return;                                    // fin para fase de grupos
+        }
+
+        /* ----------------------- CUARTOS / SEMI / FINAL ------------------------- */
+        List<Partidos> pendientes = fixture.stream()
+                .filter(p -> !p.isJugado() && p.getFase() == faseActual)
+                .toList();
+
+        if (pendientes.isEmpty()) {
+            vista.mensaje("No hay partidos pendientes en " + faseActual + ".");
             return;
         }
 
-        Partidos partido = fixture.stream()
-                .filter(p -> !p.isJugado()
-                && p.getFase() == faseActual
-                && ((p.getEquipoLocal() == local && p.getEquipoVisitante() == visit)
-                || (p.getEquipoLocal() == visit && p.getEquipoVisitante() == local)))
-                .findFirst().orElse(null);
-
-        if (partido == null) {
-            vista.mensaje("Ese encuentro no está disponible en esta fase.");
+        vista.mensaje("\n=== PARTIDOS PENDIENTES – " + faseActual + " ===");
+        int n = vista.menuSeleccionarPartido(pendientes);
+        if (n <= 0 || n > pendientes.size()) {
             return;
         }
+
+        boolean quedan = fixture.stream()
+                .anyMatch(p -> p.getFase() == Fase.GRUPOS && !p.isJugado());
+
+        if (!quedan) {
+            finalizarFaseGrupos();               // genera Cuartos y cambia fase
+        }
+        return;
+    }
+
+    private void procesarResultado(Partidos partido) {
+        Equipos local = partido.getEquipoLocal();
+        Equipos visita = partido.getEquipoVisitante();
 
         if (partido.getNombreEstadio().equals("Por definir")) {
             partido.setNombreEstadio(vista.pedirEstadio());
         }
 
         int gL = vista.pedirGoles(local.getNombreEquipo());
-        int gV = vista.pedirGoles(visit.getNombreEquipo());
+        int gV = vista.pedirGoles(visita.getNombreEquipo());
 
         partido.setGolesLocal(gL);
         partido.setGolesVisitante(gV);
         partido.setJugado(true);
 
-        if (faseActual == Fase.GRUPOS) {
-            // Puntos
+        if (partido.getFase() == Fase.GRUPOS) {
+            // puntos
             if (gL > gV) {
                 local.sumarPuntos(3);
-            } else if (gL < gV) {
-                visit.sumarPuntos(3);
+            } else if (gV > gL) {
+                visita.sumarPuntos(3);
             } else {
                 local.sumarPuntos(1);
-                visit.sumarPuntos(1);
+                visita.sumarPuntos(1);
             }
 
-            // Goles a favor y en contra
+            // estadísticas
             local.sumarGolesAFavor(gL);
             local.sumarGolesEnContra(gV);
-            visit.sumarGolesAFavor(gV);
-            visit.sumarGolesEnContra(gL);
-
-            // Diferencia de goles
+            visita.sumarGolesAFavor(gV);
+            visita.sumarGolesEnContra(gL);
             local.actualizarDiferenciaGoles();
-            visit.actualizarDiferenciaGoles();
-        }
-
-        if (partido.isEliminatorio()) {
-            Equipos ganador = gL > gV ? local : visit;
-            Equipos perdedor = gL > gV ? visit : local;
-            perdedor.setPuntuacionEquipo(-1);
+            visita.actualizarDiferenciaGoles();
+        } else {
+            Equipos perd = (gL > gV) ? visita : local;
+            perd.setPuntuacionEquipo(-1);   // eliminado
         }
 
         vista.mensaje("Resultado registrado.");
     }
 
     private void finalizarFaseGrupos() {
+
         if (faseActual != Fase.GRUPOS) {
             return;
         }
@@ -302,6 +356,7 @@ public class Controlador {
         }
 
         crearCuartos(clasificados);
+        vista.mensaje("¡Fase de grupos finalizada! Pasando a cuartos de final…");
         faseActual = Fase.CUARTOS;
     }
 
@@ -330,7 +385,7 @@ public class Controlador {
                 case 1 ->
                     jugarPartido();
                 case 2 ->
-                    vista.mostrarFixture(fixture);
+                    vista.mostrarFixtureGrupos(grupos, fixture);
                 case 3 ->
                     vista.mostrarTablaDePosiciones(equipos);
                 case 0 ->
