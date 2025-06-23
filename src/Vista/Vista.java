@@ -36,13 +36,12 @@ public class Vista {
     }
 
     private int leerEntero(String label) {
-        int valor;
         while (true) {
             try {
                 System.out.print(label.toUpperCase());
-                valor = Integer.parseInt(scanner.nextLine().trim());
+                int valor = Integer.parseInt(scanner.nextLine().trim());
                 return valor;
-            } catch (NumberFormatException e) {
+            } catch (Exception e) {
                 System.out.println("INGRESE UN NUMERO VALIDO.");
             }
         }
@@ -75,21 +74,27 @@ public class Vista {
         );
 
         char[] orden = {'A', 'B', 'C', 'D'};
-        for (char letra : orden) {
-            List<Partidos> lista = fixture.stream()
-                    .filter(p -> p.getFase() == Fase.GRUPOS && !p.isJugado()
-                    && mapa.get(letra).contains(p.getEquipoLocal())
-                    && mapa.get(letra).contains(p.getEquipoVisitante()))
-                    .toList();
+        for (int i = 0; i < orden.length; i++) {
+            char letra = orden[i];
+            List<Partidos> lista = new ArrayList<>();
+            for (int j = 0; j < fixture.size(); j++) {
+                Partidos p = fixture.get(j);
+                if (p.getFase() == Fase.GRUPOS && !p.isJugado()) {
+                    List<Equipos> grupoEquipos = mapa.get(letra);
+                    if (grupoEquipos.contains(p.getEquipoLocal()) && grupoEquipos.contains(p.getEquipoVisitante())) {
+                        lista.add(p);
+                    }
+                }
+            }
 
             System.out.println(("==== GRUPO " + letra + " ====").toUpperCase());
-            if (lista.isEmpty()) {
+            if (lista.size() == 0) {
                 System.out.println("   (TODOS JUGADOS)\n");
                 continue;
             }
-            for (int i = 0; i < lista.size(); i++) {
-                Partidos p = lista.get(i);
-                String linea = (i + 1) + ") " + p.getEquipoLocal().getNombreEquipo() + " VS " +
+            for (int k = 0; k < lista.size(); k++) {
+                Partidos p = lista.get(k);
+                String linea = (k + 1) + ") " + p.getEquipoLocal().getNombreEquipo() + " VS " +
                                p.getEquipoVisitante().getNombreEquipo() + " - (ESTADIO: " + p.getNombreEstadio() + ")";
                 System.out.println(linea.toUpperCase());
             }
@@ -104,52 +109,63 @@ public class Vista {
             if (in.equals("0")) {
                 return '0';
             }
-            if (in.matches("[ABCD]")) {
+            if (in.equals("A") || in.equals("B") || in.equals("C") || in.equals("D")) {
                 return in.charAt(0);
             }
             System.out.print("GRUPO INVALIDO. INTENTE OTRA VEZ: ");
         }
     }
 
-   public void mostrarTablaDePosiciones(List<Equipos> equipos) {
-    Map<String, List<Equipos>> equiposPorGrupo = new TreeMap<>();
-
-    for (Equipos e : equipos) {
-        equiposPorGrupo.computeIfAbsent(e.getGrupo(), k -> new ArrayList<>()).add(e);
-    }
-
-    for (String grupo : equiposPorGrupo.keySet()) {
-        System.out.println(("\n=== GRUPO " + grupo + " ===").toUpperCase());
-
-        List<Equipos> listaGrupo = equiposPorGrupo.get(grupo);
-        listaGrupo.sort((e1, e2) -> {
-            if (e2.getPuntuacionEquipo() != e1.getPuntuacionEquipo()) {
-                return Integer.compare(e2.getPuntuacionEquipo(), e1.getPuntuacionEquipo());
-            } else {
-                return Integer.compare(e2.getDiferenciaGoles(), e1.getDiferenciaGoles());
+    public void mostrarTablaDePosiciones(List<Equipos> equipos) {
+        Map<String, List<Equipos>> equiposPorGrupo = new TreeMap<>();
+        // llenar mapa sin usar computeIfAbsent
+        for (int i = 0; i < equipos.size(); i++) {
+            Equipos e = equipos.get(i);
+            String grupo = e.getGrupo();
+            if (!equiposPorGrupo.containsKey(grupo)) {
+                equiposPorGrupo.put(grupo, new ArrayList<Equipos>());
             }
-        });
+            equiposPorGrupo.get(grupo).add(e);
+        }
 
-        System.out.println("EQUIPO              PUNTOS     GOLES A FAVOR   GOLES EN CONTRA   DIFERENCIA DE GOLES");
-        System.out.println("--------------------------------------------------------------------------------------");
+        for (String grupo : equiposPorGrupo.keySet()) {
+            System.out.println(("\n=== GRUPO " + grupo + " ===").toUpperCase());
 
-        for (Equipos e : listaGrupo) {
-            String nombre = e.getNombreEquipo().toUpperCase();
-            int espaciosNombre = 20 - nombre.length();
-            if (espaciosNombre < 1) espaciosNombre = 1;
+            List<Equipos> listaGrupo = equiposPorGrupo.get(grupo);
 
-            String linea = nombre
-                    + " ".repeat(espaciosNombre)
-                    + "   " + e.getPuntuacionEquipo()
-                    + "          " + e.getGolesAFavor()
-                    + "              " + e.getGolesEnContra()
-                    + "                " + e.getDiferenciaGoles();
+            // orden simple burbuja (sin lambda ni comparadores)
+            for (int i = 0; i < listaGrupo.size() - 1; i++) {
+                for (int j = 0; j < listaGrupo.size() - i - 1; j++) {
+                    Equipos e1 = listaGrupo.get(j);
+                    Equipos e2 = listaGrupo.get(j + 1);
+                    if (e2.getPuntuacionEquipo() > e1.getPuntuacionEquipo() ||
+                       (e2.getPuntuacionEquipo() == e1.getPuntuacionEquipo() && e2.getDiferenciaGoles() > e1.getDiferenciaGoles())) {
+                        listaGrupo.set(j, e2);
+                        listaGrupo.set(j + 1, e1);
+                    }
+                }
+            }
 
-            System.out.println(linea);
+            System.out.println("EQUIPO              PUNTOS     GOLES A FAVOR   GOLES EN CONTRA   DIFERENCIA DE GOLES");
+            System.out.println("--------------------------------------------------------------------------------------");
+
+            for (int i = 0; i < listaGrupo.size(); i++) {
+                Equipos e = listaGrupo.get(i);
+                String nombre = e.getNombreEquipo().toUpperCase();
+                int espacios = 20 - nombre.length();
+                if (espacios < 1) espacios = 1;
+
+                String espaciosStr = "";
+                for (int s = 0; s < espacios; s++) {
+                    espaciosStr += " ";
+                }
+
+                String linea = nombre + espaciosStr + "   " + e.getPuntuacionEquipo() + "          " + e.getGolesAFavor()
+                        + "              " + e.getGolesEnContra() + "                " + e.getDiferenciaGoles();
+                System.out.println(linea);
+            }
         }
     }
-}
-
 
     public void mostrarGrupos(Grupos g) {
         System.out.println("\n=== FASE DE GRUPOS ===");
@@ -161,11 +177,12 @@ public class Vista {
 
     private void imprimirGrupo(String nombreGrupo, List<Equipos> equipos) {
         System.out.println(("==== " + nombreGrupo + " ====").toUpperCase());
-        if (equipos.isEmpty()) {
+        if (equipos.size() == 0) {
             System.out.println("   (SIN EQUIPOS)");
             return;
         }
-        for (Equipos e : equipos) {
+        for (int i = 0; i < equipos.size(); i++) {
+            Equipos e = equipos.get(i);
             String linea = " - " + e.getNombreEquipo() + " (PUNTAJE: " + e.getPuntuacionEquipo() + ")";
             System.out.println(linea.toUpperCase());
         }
@@ -174,10 +191,13 @@ public class Vista {
 
     public void mostrarEquiposConJugadores(List<Equipos> equipos) {
         System.out.println("\n=== EQUIPOS Y JUGADORES ===");
-        for (Equipos e : equipos) {
+        for (int i = 0; i < equipos.size(); i++) {
+            Equipos e = equipos.get(i);
             System.out.println(("\n• " + e.getNombreEquipo() + " (PUNTOS: " + e.getPuntuacionEquipo() + ")").toUpperCase());
-            for (Jugadores j : e.getPlantel()) {
-                String linea = "   - " + j.getNombreJugador() + " (" + j.getEdadJugador() + " AÑOS)";
+            List<Jugadores> plantel = e.getPlantel();
+            for (int j = 0; j < plantel.size(); j++) {
+                Jugadores jug = plantel.get(j);
+                String linea = "   - " + jug.getNombreJugador() + " (" + jug.getEdadJugador() + " AÑOS)";
                 System.out.println(linea.toUpperCase());
             }
         }
@@ -198,7 +218,7 @@ public class Vista {
                     continue;
                 }
                 return goles;
-            } catch (NumberFormatException e) {
+            } catch (Exception e) {
                 System.out.print("ENTRADA INVALIDA. INGRESE UN NUMERO ENTERO: ");
             }
         }

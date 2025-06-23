@@ -16,42 +16,44 @@ import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.stream.Collectors;
 
 public class Controlador {
 
-    private final List<Jugadores> jugadores = new ArrayList<>();
-    private final List<Equipos> equipos = new ArrayList<>();
-    private final Grupos grupos = new Grupos();
-    private final List<Partidos> fixture = new ArrayList<>();
+    private List<Jugadores> jugadores = new ArrayList<>();
+    private List<Equipos> equipos = new ArrayList<>();
+    private Grupos grupos = new Grupos();
+    private List<Partidos> fixture = new ArrayList<>();
     private Fase faseActual = Fase.GRUPOS;
-    private final Vista vista = new Vista();
+    private Vista vista = new Vista();
 
     private List<Equipos> equiposVivos() {
-        return equipos.stream()
-                .filter(e -> e.getPuntuacionEquipo() >= 0)
-                .collect(Collectors.toList());
+        List<Equipos> vivos = new ArrayList<>();
+        for (int i = 0; i < equipos.size(); i++) {
+            if (equipos.get(i).getPuntuacionEquipo() >= 0) {
+                vivos.add(equipos.get(i));
+            }
+        }
+        return vivos;
     }
 
     public void iniciar() {
         boolean salir = false;
         while (!salir) {
-            switch (vista.menu()) {
-                case 1 -> {
-                    generarFixtureGrupos();
-                    faseActual = Fase.GRUPOS;
-                    vista.mensaje("FIXTURE GENERADO Y FASE DE GRUPOS INICIADA!");
-                    vista.mostrarFixtureGrupos(grupos, fixture);
-                    ejecutarFases();
-                }
-                case 2 ->
-                    vista.mostrarEquiposConJugadores(equipos);
-                case 3 ->
-                    vista.mostrarGrupos(grupos);
-                case 0 ->
-                    salir = true;
-                default ->
-                    vista.mensaje("OPCION INVALIDA");
+            int opcion = vista.menu();
+            if (opcion == 1) {
+                generarFixtureGrupos();
+                faseActual = Fase.GRUPOS;
+                vista.mensaje("FIXTURE GENERADO Y FASE DE GRUPOS INICIADA!");
+                vista.mostrarFixtureGrupos(grupos, fixture);
+                ejecutarFases();
+            } else if (opcion == 2) {
+                vista.mostrarEquiposConJugadores(equipos);
+            } else if (opcion == 3) {
+                vista.mostrarGrupos(grupos);
+            } else if (opcion == 0) {
+                salir = true;
+            } else {
+                vista.mensaje("OPCION INVALIDA");
             }
         }
     }
@@ -59,35 +61,42 @@ public class Controlador {
     private void ejecutarFases() {
         boolean volver = false;
         while (!volver) {
-            switch (vista.menucampeonato()) {
-                case 1 ->
-                    jugarPartido();
-                case 2 ->
-                    vista.mostrarFixtureGrupos(grupos, fixture);
-                case 3 ->
-                    vista.mostrarTablaDePosiciones(equipos);
-                case 0 ->
-                    volver = true;
-                default ->
-                    vista.mensaje("OPCION INVALIDA.");
+            int opcion = vista.menucampeonato();
+            if (opcion == 1) {
+                jugarPartido();
+            } else if (opcion == 2) {
+                vista.mostrarFixtureGrupos(grupos, fixture);
+            } else if (opcion == 3) {
+                vista.mostrarTablaDePosiciones(equipos);
+            } else if (opcion == 0) {
+                volver = true;
+            } else {
+                vista.mensaje("OPCION INVALIDA.");
             }
         }
     }
 
     private void generarFixtureGrupos() {
         fixture.clear();
-        List<List<Equipos>> gs = List.of(
-                grupos.getGrupoA(),
-                grupos.getGrupoB(),
-                grupos.getGrupoC(),
-                grupos.getGrupoD()
-        );
-        for (List<Equipos> g : gs) {
-            for (int i = 0; i < g.size() - 1; i++) {
-                for (int j = i + 1; j < g.size(); j++) {
+
+        List<Equipos> grupoA = grupos.getGrupoA();
+        List<Equipos> grupoB = grupos.getGrupoB();
+        List<Equipos> grupoC = grupos.getGrupoC();
+        List<Equipos> grupoD = grupos.getGrupoD();
+
+        List<List<Equipos>> todosGrupos = new ArrayList<>();
+        todosGrupos.add(grupoA);
+        todosGrupos.add(grupoB);
+        todosGrupos.add(grupoC);
+        todosGrupos.add(grupoD);
+
+        for (int g = 0; g < todosGrupos.size(); g++) {
+            List<Equipos> grupo = todosGrupos.get(g);
+            for (int i = 0; i < grupo.size() - 1; i++) {
+                for (int j = i + 1; j < grupo.size(); j++) {
                     Partidos p = new Partidos();
-                    p.setEquipoLocal(g.get(i));
-                    p.setEquipoVisitante(g.get(j));
+                    p.setEquipoLocal(grupo.get(i));
+                    p.setEquipoVisitante(grupo.get(j));
                     p.setFase(Fase.GRUPOS);
                     p.setNombreEstadio("POR DEFINIR");
                     fixture.add(p);
@@ -97,19 +106,24 @@ public class Controlador {
     }
 
     public void cargarJugadores(String ruta) {
-        try (BufferedReader br = new BufferedReader(
-                new InputStreamReader(new FileInputStream(ruta), StandardCharsets.UTF_8))) {
+        try {
+            BufferedReader br = new BufferedReader(
+                new InputStreamReader(new FileInputStream(ruta), StandardCharsets.UTF_8));
 
+            br.readLine(); // salto encabezado
             String linea;
-            br.readLine();
             while ((linea = br.readLine()) != null) {
                 String[] p = linea.split(",");
                 if (p.length < 3) {
                     continue;
                 }
-
                 String nombreJugador = p[0].trim();
-                int edad = parseEdad(p[1]);
+                int edad = 0;
+                try {
+                    edad = Integer.parseInt(p[1].trim());
+                } catch (Exception e) {
+                    edad = 0;
+                }
                 String nombreEquipo = p[2].trim();
 
                 Jugadores jug = new Jugadores(nombreJugador, edad);
@@ -121,51 +135,54 @@ public class Controlador {
                     jugadores.add(jug);
                 }
             }
+            br.close();
             vista.mensaje("JUGADORES CARGADOS: " + jugadores.size());
         } catch (IOException ex) {
             vista.mensaje("ERROR LEYENDO JUGADORES: " + ex.getMessage());
         }
     }
 
-    private int parseEdad(String campo) {
-        try {
-            return Integer.parseInt(campo.trim());
-        } catch (NumberFormatException ex) {
-            return 0;
-        }
-    }
-
     private String normalizar(String texto) {
-        return Normalizer.normalize(texto, Normalizer.Form.NFD)
-                .replaceAll("\\p{M}", "")
-                .toLowerCase(Locale.ROOT)
-                .trim();
+        String textoNorm = Normalizer.normalize(texto, Normalizer.Form.NFD);
+        textoNorm = textoNorm.replaceAll("\\p{M}", "");
+        textoNorm = textoNorm.toLowerCase(Locale.ROOT);
+        textoNorm = textoNorm.trim();
+        return textoNorm;
     }
 
     private Equipos buscarEquipoPorNombre(String nombre) {
         String buscado = normalizar(nombre);
-        return equipos.stream()
-                .filter(e -> normalizar(e.getNombreEquipo()).equals(buscado))
-                .findFirst()
-                .orElse(null);
+        for (int i = 0; i < equipos.size(); i++) {
+            if (normalizar(equipos.get(i).getNombreEquipo()).equals(buscado)) {
+                return equipos.get(i);
+            }
+        }
+        return null;
     }
 
     public void cargarEquipos(String ruta) {
-        try (BufferedReader br = new BufferedReader(new FileReader(ruta))) {
-            br.readLine();
-            int indice = 0;
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(ruta));
+            br.readLine(); // salto encabezado
             String linea;
+            int indice = 0;
             while ((linea = br.readLine()) != null) {
                 String[] p = linea.split(",");
                 String nombre = p[0].trim();
-                int puntaje = Integer.parseInt(p[1].trim());
-
+                int puntaje = 0;
+                try {
+                    puntaje = Integer.parseInt(p[1].trim());
+                } catch (Exception e) {
+                    puntaje = 0;
+                }
                 Equipos e = new Equipos(nombre, puntaje);
-                e.setGrupo(String.valueOf((char) ('A' + (indice / 4))));
+                char letraGrupo = (char) ('A' + (indice / 4));
+                e.setGrupo("" + letraGrupo);
                 equipos.add(e);
                 grupos.asignarAGrupo(e, indice);
                 indice++;
             }
+            br.close();
             vista.mensaje("EQUIPOS CARGADOS: " + equipos.size());
         } catch (IOException ex) {
             vista.mensaje("ERROR LEYENDO EQUIPOS: " + ex.getMessage());
@@ -176,59 +193,54 @@ public class Controlador {
         if (faseActual == null) {
             return;
         }
-
         if (faseActual == Fase.GRUPOS) {
             vista.mostrarFixtureGrupos(grupos, fixture);
             char letra = vista.menuSeleccionarGrupo();
             if (letra == '0') {
                 return;
             }
+            List<Equipos> listaEquipos = null;
+            if (letra == 'A') listaEquipos = grupos.getGrupoA();
+            else if (letra == 'B') listaEquipos = grupos.getGrupoB();
+            else if (letra == 'C') listaEquipos = grupos.getGrupoC();
+            else listaEquipos = grupos.getGrupoD();
 
-            List<Equipos> listaEquipos = switch (letra) {
-                case 'A' ->
-                    grupos.getGrupoA();
-                case 'B' ->
-                    grupos.getGrupoB();
-                case 'C' ->
-                    grupos.getGrupoC();
-                default ->
-                    grupos.getGrupoD();
-            };
-
-            List<Partidos> pendientes = fixture.stream()
-                    .filter(p -> !p.isJugado() && p.getFase() == Fase.GRUPOS && listaEquipos.contains(p.getEquipoLocal()))
-                    .toList();
-
-            if (pendientes.isEmpty()) {
+            List<Partidos> pendientes = new ArrayList<>();
+            for (int i = 0; i < fixture.size(); i++) {
+                Partidos p = fixture.get(i);
+                if (!p.isJugado() && p.getFase() == Fase.GRUPOS && listaEquipos.contains(p.getEquipoLocal())) {
+                    pendientes.add(p);
+                }
+            }
+            if (pendientes.size() == 0) {
                 vista.mensaje("NO QUEDAN PARTIDOS PENDIENTES EN EL GRUPO " + letra + ".");
                 return;
             }
-
             int n = vista.menuSeleccionarPartido(pendientes);
             if (n <= 0 || n > pendientes.size()) {
                 return;
             }
-
             procesarResultado(pendientes.get(n - 1));
             finalizarFaseGrupos();
             return;
         }
 
-        List<Partidos> pendientes = fixture.stream()
-                .filter(p -> !p.isJugado() && p.getFase() == faseActual)
-                .toList();
-
-        if (pendientes.isEmpty()) {
+        List<Partidos> pendientes = new ArrayList<>();
+        for (int i = 0; i < fixture.size(); i++) {
+            Partidos p = fixture.get(i);
+            if (!p.isJugado() && p.getFase() == faseActual) {
+                pendientes.add(p);
+            }
+        }
+        if (pendientes.size() == 0) {
             vista.mensaje("NO HAY PARTIDOS PENDIENTES EN " + faseActual + ".");
             return;
         }
-
         vista.mensaje("\n=== PARTIDOS PENDIENTES – " + faseActual + " ===");
         int n = vista.menuSeleccionarPartido(pendientes);
         if (n <= 0 || n > pendientes.size()) {
             return;
         }
-
         procesarResultado(pendientes.get(n - 1));
         avanzarFaseSiCorresponde();
     }
@@ -264,10 +276,14 @@ public class Controlador {
             local.actualizarDiferenciaGoles();
             visita.actualizarDiferenciaGoles();
         } else {
-            Equipos perd = (gL > gV) ? visita : local;
-            perd.setPuntuacionEquipo(-1);
+            Equipos perdedor;
+            if (gL > gV) {
+                perdedor = visita;
+            } else {
+                perdedor = local;
+            }
+            perdedor.setPuntuacionEquipo(-1);
         }
-
         vista.mensaje("RESULTADO REGISTRADO.");
     }
 
@@ -275,28 +291,53 @@ public class Controlador {
         if (faseActual != Fase.GRUPOS) {
             return;
         }
-
-        if (fixture.stream().anyMatch(p -> p.getFase() == Fase.GRUPOS && !p.isJugado())) {
+        boolean quedanPartidos = false;
+        for (int i = 0; i < fixture.size(); i++) {
+            Partidos p = fixture.get(i);
+            if (p.getFase() == Fase.GRUPOS && !p.isJugado()) {
+                quedanPartidos = true;
+                break;
+            }
+        }
+        if (quedanPartidos) {
             return;
         }
 
         List<Equipos> clasificados = new ArrayList<>();
-        for (List<Equipos> g : List.of(grupos.getGrupoA(), grupos.getGrupoB(), grupos.getGrupoC(), grupos.getGrupoD())) {
-            g.sort((a, b) -> Integer.compare(b.getPuntuacionEquipo(), a.getPuntuacionEquipo()));
-            Equipos segundo = g.get(1);
-            Equipos tercero = g.get(2);
+        List<List<Equipos>> todosGrupos = new ArrayList<>();
+        todosGrupos.add(grupos.getGrupoA());
+        todosGrupos.add(grupos.getGrupoB());
+        todosGrupos.add(grupos.getGrupoC());
+        todosGrupos.add(grupos.getGrupoD());
+
+        for (int g = 0; g < todosGrupos.size(); g++) {
+            List<Equipos> grupo = todosGrupos.get(g);
+            // ordenar grupo por puntos (simple burbuja)
+            for (int i = 0; i < grupo.size() - 1; i++) {
+                for (int j = 0; j < grupo.size() - i - 1; j++) {
+                    if (grupo.get(j).getPuntuacionEquipo() < grupo.get(j + 1).getPuntuacionEquipo()) {
+                        Equipos temp = grupo.get(j);
+                        grupo.set(j, grupo.get(j + 1));
+                        grupo.set(j + 1, temp);
+                    }
+                }
+            }
+
+            Equipos segundo = grupo.get(1);
+            Equipos tercero = grupo.get(2);
 
             if (segundo.getPuntuacionEquipo() == tercero.getPuntuacionEquipo()) {
-                Partidos tie = new Partidos();
-                tie.setEquipoLocal(segundo);
-                tie.setEquipoVisitante(tercero);
-                tie.setFase(Fase.GRUPOS);
-                tie.setNombreEstadio("DESEMPATE");
-                fixture.add(tie);
+                Partidos desempate = new Partidos();
+                desempate.setEquipoLocal(segundo);
+                desempate.setEquipoVisitante(tercero);
+                desempate.setFase(Fase.GRUPOS);
+                desempate.setNombreEstadio("DESEMPATE");
+                fixture.add(desempate);
                 vista.mensaje("SE AGENDO DESEMPATE " + segundo.getNombreEquipo() + " VS " + tercero.getNombreEquipo());
                 return;
             }
-            clasificados.add(g.get(0));
+
+            clasificados.add(grupo.get(0));
             clasificados.add(segundo);
         }
         crearCuartos(clasificados);
@@ -306,10 +347,10 @@ public class Controlador {
 
     private void crearCuartos(List<Equipos> c) {
         int[][] cruces = {{0, 3}, {2, 1}, {4, 7}, {6, 5}};
-        for (int[] par : cruces) {
+        for (int i = 0; i < cruces.length; i++) {
             Partidos p = new Partidos();
-            p.setEquipoLocal(c.get(par[0]));
-            p.setEquipoVisitante(c.get(par[1]));
+            p.setEquipoLocal(c.get(cruces[i][0]));
+            p.setEquipoVisitante(c.get(cruces[i][1]));
             p.setFase(Fase.CUARTOS);
             p.setNombreEstadio("POR DEFINIR");
             fixture.add(p);
@@ -319,10 +360,10 @@ public class Controlador {
 
     private void crearSemis(List<Equipos> c) {
         int[][] cruces = {{0, 1}, {2, 3}};
-        for (int[] par : cruces) {
+        for (int i = 0; i < cruces.length; i++) {
             Partidos p = new Partidos();
-            p.setEquipoLocal(c.get(par[0]));
-            p.setEquipoVisitante(c.get(par[1]));
+            p.setEquipoLocal(c.get(cruces[i][0]));
+            p.setEquipoVisitante(c.get(cruces[i][1]));
             p.setFase(Fase.SEMIS);
             p.setNombreEstadio("POR DEFINIR");
             fixture.add(p);
@@ -341,20 +382,29 @@ public class Controlador {
     }
 
     private void avanzarFaseSiCorresponde() {
-        List<Partidos> pendientes = fixture.stream()
-                .filter(p -> p.getFase() == faseActual && !p.isJugado())
-                .toList();
+        List<Partidos> pendientes = new ArrayList<>();
+        for (int i = 0; i < fixture.size(); i++) {
+            Partidos p = fixture.get(i);
+            if (p.getFase() == faseActual && !p.isJugado()) {
+                pendientes.add(p);
+            }
+        }
 
-        if (!pendientes.isEmpty()) {
+        if (pendientes.size() > 0) {
             return;
         }
 
-        List<Partidos> partidosJugados = fixture.stream()
-                .filter(p -> p.getFase() == faseActual && p.isJugado())
-                .toList();
+        List<Partidos> partidosJugados = new ArrayList<>();
+        for (int i = 0; i < fixture.size(); i++) {
+            Partidos p = fixture.get(i);
+            if (p.getFase() == faseActual && p.isJugado()) {
+                partidosJugados.add(p);
+            }
+        }
 
         List<Equipos> ganadores = new ArrayList<>();
-        for (Partidos p : partidosJugados) {
+        for (int i = 0; i < partidosJugados.size(); i++) {
+            Partidos p = partidosJugados.get(i);
             int gL = p.getGolesLocal();
             int gV = p.getGolesVisitante();
             Equipos ganador = (gL > gV) ? p.getEquipoLocal() : p.getEquipoVisitante();
@@ -371,7 +421,7 @@ public class Controlador {
             vista.mensaje("FINAL GENERADA!");
         } else if (faseActual == Fase.FINAL) {
             Equipos ganadorFinal = ganadores.get(0);
-            vista.mensaje("\n¡EL GANADOR DEL MUNDIAL ES: " + ganadorFinal.getNombreEquipo() + "!");
+            vista.mensaje("\nEL GANADOR DEL MUNDIAL ES: " + ganadorFinal.getNombreEquipo() + "!");
             System.exit(0);
         }
     }
