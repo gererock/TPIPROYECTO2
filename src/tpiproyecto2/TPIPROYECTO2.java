@@ -16,9 +16,9 @@ public class TPIPROYECTO2 {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-    Controlador controlador = new Controlador();
-    controlador.cargarEquipos("src\\Archivos\\EquiposMundial.txt");     
-    controlador.cargarJugadores("src\\Archivos\\jugadoresMundial.txt"); 
-    controlador.iniciar();
+        Controlador controlador = new Controlador();
+        controlador.cargarEquipos("src\\Archivos\\EquiposMundial.txt");
+        controlador.cargarJugadores("src\\Archivos\\jugadoresMundial.txt");
+        controlador.iniciar();
     }
 }

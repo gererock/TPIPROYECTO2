@@ -108,9 +108,9 @@ public class Controlador {
     public void cargarJugadores(String ruta) {
         try {
             BufferedReader br = new BufferedReader(
-                new InputStreamReader(new FileInputStream(ruta), StandardCharsets.UTF_8));
+                    new InputStreamReader(new FileInputStream(ruta), StandardCharsets.UTF_8));
 
-            br.readLine(); // salto encabezado
+            br.readLine();
             String linea;
             while ((linea = br.readLine()) != null) {
                 String[] p = linea.split(",");
@@ -163,7 +163,7 @@ public class Controlador {
     public void cargarEquipos(String ruta) {
         try {
             BufferedReader br = new BufferedReader(new FileReader(ruta));
-            br.readLine(); // salto encabezado
+            br.readLine();
             String linea;
             int indice = 0;
             while ((linea = br.readLine()) != null) {
@@ -200,10 +200,15 @@ public class Controlador {
                 return;
             }
             List<Equipos> listaEquipos = null;
-            if (letra == 'A') listaEquipos = grupos.getGrupoA();
-            else if (letra == 'B') listaEquipos = grupos.getGrupoB();
-            else if (letra == 'C') listaEquipos = grupos.getGrupoC();
-            else listaEquipos = grupos.getGrupoD();
+            if (letra == 'A') {
+                listaEquipos = grupos.getGrupoA();
+            } else if (letra == 'B') {
+                listaEquipos = grupos.getGrupoB();
+            } else if (letra == 'C') {
+                listaEquipos = grupos.getGrupoC();
+            } else {
+                listaEquipos = grupos.getGrupoD();
+            }
 
             List<Partidos> pendientes = new ArrayList<>();
             for (int i = 0; i < fixture.size(); i++) {
@@ -276,14 +281,30 @@ public class Controlador {
             local.actualizarDiferenciaGoles();
             visita.actualizarDiferenciaGoles();
         } else {
-            Equipos perdedor;
-            if (gL > gV) {
-                perdedor = visita;
+            if (gL == gV) {
+                vista.mensaje("EMPATE! SE DEFINE POR PENALES.");
+                int penalesLocal, penalesVisita;
+                do {
+                    penalesLocal = vista.pedirGoles("GOLES POR PENALES de " + local.getNombreEquipo());
+                    penalesVisita = vista.pedirGoles("GOLES POR PENALES de " + visita.getNombreEquipo());
+                    if (penalesLocal == penalesVisita) {
+                        vista.mensaje("NO PUEDE HABER EMPATE EN PENALES. INGRESE NUEVAMENTE.");
+                    }
+                } while (penalesLocal == penalesVisita);
+
+                if (penalesLocal > penalesVisita) {
+                    visita.setPuntuacionEquipo(-1);
+                    vista.mensaje("GANADOR POR PENALES: " + local.getNombreEquipo());
+                } else {
+                    local.setPuntuacionEquipo(-1);
+                    vista.mensaje("GANADOR POR PENALES: " + visita.getNombreEquipo());
+                }
             } else {
-                perdedor = local;
+                Equipos perdedor = gL > gV ? visita : local;
+                perdedor.setPuntuacionEquipo(-1);
             }
-            perdedor.setPuntuacionEquipo(-1);
         }
+
         vista.mensaje("RESULTADO REGISTRADO.");
     }
 
@@ -312,7 +333,6 @@ public class Controlador {
 
         for (int g = 0; g < todosGrupos.size(); g++) {
             List<Equipos> grupo = todosGrupos.get(g);
-            // ordenar grupo por puntos (simple burbuja)
             for (int i = 0; i < grupo.size() - 1; i++) {
                 for (int j = 0; j < grupo.size() - i - 1; j++) {
                     if (grupo.get(j).getPuntuacionEquipo() < grupo.get(j + 1).getPuntuacionEquipo()) {
@@ -403,12 +423,21 @@ public class Controlador {
         }
 
         List<Equipos> ganadores = new ArrayList<>();
-        for (int i = 0; i < partidosJugados.size(); i++) {
-            Partidos p = partidosJugados.get(i);
-            int gL = p.getGolesLocal();
-            int gV = p.getGolesVisitante();
-            Equipos ganador = (gL > gV) ? p.getEquipoLocal() : p.getEquipoVisitante();
-            ganadores.add(ganador);
+        for (Partidos p : partidosJugados) {
+            Equipos local = p.getEquipoLocal();
+            Equipos visitante = p.getEquipoVisitante();
+
+            if (local.getPuntuacionEquipo() == -1) {
+                ganadores.add(visitante);
+            } else if (visitante.getPuntuacionEquipo() == -1) {
+                ganadores.add(local);
+            } else {
+                if (p.getGolesLocal() > p.getGolesVisitante()) {
+                    ganadores.add(local);
+                } else {
+                    ganadores.add(visitante);
+                }
+            }
         }
 
         if (faseActual == Fase.CUARTOS) {

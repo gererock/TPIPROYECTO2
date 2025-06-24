@@ -9,6 +9,7 @@ package Modelo;
  * @author Geremias Rocchietti
  */
 public class Estadios {
+
     private String nombreEstadio;
     private String ubicacionEstadio;
 
@@ -37,6 +38,5 @@ public class Estadios {
     public String toString() {
         return "Estadios{" + "nombreEstadio=" + nombreEstadio + ", ubicacionEstadio=" + ubicacionEstadio + '}';
     }
-    
-    
+
 }

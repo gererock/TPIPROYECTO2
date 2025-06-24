@@ -96,7 +96,7 @@ public class Partidos {
     }
 
     public boolean isEliminatorio() {
-        return fase != Fase.GRUPOS;  
+        return fase != Fase.GRUPOS;
     }
 
     @Override

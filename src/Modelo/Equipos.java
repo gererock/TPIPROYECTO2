@@ -17,7 +17,6 @@ public class Equipos {
     private int puntuacionEquipo;
     private final List<Jugadores> plantel = new ArrayList<>();
     private String grupo;
-    
 
     public Equipos(String nombreEquipo, int puntuacionEquipo) {
         this.nombreEquipo = nombreEquipo;

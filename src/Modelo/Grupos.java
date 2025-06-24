@@ -12,6 +12,7 @@ import java.util.List;
  * @author Geremias Rocchietti
  */
 public class Grupos {
+
     private List<Equipos> GrupoA = new ArrayList<>();
     private List<Equipos> GrupoB = new ArrayList<>();
     private List<Equipos> GrupoC = new ArrayList<>();
@@ -53,13 +54,17 @@ public class Grupos {
     public String toString() {
         return "=============Grupos=============" + "GrupoA=" + GrupoA + "\n GrupoB=" + GrupoB + "\n GrupoC=" + GrupoC + "\n GrupoD=" + GrupoD + '}';
     }
-    
-        public void asignarAGrupo(Equipos e, int indice) {
-        if      (indice < 4)  GrupoA.add(e);
-        else if (indice < 8)  GrupoB.add(e);
-        else if (indice < 12) GrupoC.add(e);
-        else                  GrupoD.add(e);
+
+    public void asignarAGrupo(Equipos e, int indice) {
+        if (indice < 4) {
+            GrupoA.add(e);
+        } else if (indice < 8) {
+            GrupoB.add(e);
+        } else if (indice < 12) {
+            GrupoC.add(e);
+        } else {
+            GrupoD.add(e);
+        }
     }
 
-    
 }

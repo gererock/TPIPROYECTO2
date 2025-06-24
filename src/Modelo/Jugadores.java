@@ -9,6 +9,7 @@ package Modelo;
  * @author Geremias Rocchietti
  */
 public class Jugadores {
+
     private String nombreJugador;
     private int edadJugador;
     private Equipos equipo;
@@ -42,14 +43,10 @@ public class Jugadores {
         this.equipo = equipo;
     }
 
- @Override
+    @Override
     public String toString() {
         return "%s (%d años) - %s".formatted(nombreJugador, edadJugador,
-                                             equipo != null ? equipo.getNombreEquipo() : "Sin equipo");
+                equipo != null ? equipo.getNombreEquipo() : "Sin equipo");
     }
 
-
- 
-    
-    
 }
